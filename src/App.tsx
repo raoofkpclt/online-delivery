@@ -9,6 +9,7 @@ import UserManagement from "./components/admin/UserManagement";
 import Home from "./pages/client/Home";
 import UserLogin from "./pages/client/Login";
 import UserRegister from "./pages/client/Register";
+
 import Checkout from "./pages/client/Checkout";
 import RequireAuth from "./components/client/Requireauth";
 import ProductManagement from "./components/admin/ProductManagement";
@@ -21,9 +22,11 @@ import SingleProduct from "./pages/client/SingleProduct";
 import Orders from "./pages/client/Orders";
 import Report from "./components/admin/Report";
 import Cms from "./components/admin/Cms";
+import UserForgotPassword from "./pages/client/UserForgotPassword";
 
 function App() {
   return (
+    
     <Routes>
        {/* Public: anyone can browse and fill a cart */}
       <Route path="/" element={<Home />} />
@@ -33,6 +36,7 @@ function App() {
       <Route path="/cart" element={<Cart/>} />
       <Route path="/login" element={<UserLogin />} />
       <Route path="/register" element={<UserRegister />} />
+      <Route path="/forgot-password" element={<UserForgotPassword />} />
  
       {/* Needs a signed-in customer */}
       <Route element={<RequireAuth />}>
