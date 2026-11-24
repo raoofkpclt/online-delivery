@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import Footer from "../../components/client/Footer";
 import Modal from "../../components/client/Modal";
 import Navbar from "../../components/client/Navbar";
@@ -156,6 +156,16 @@ function Breadcrumb() {
 export default function Orders() {
   const { user, profile } = useAuth();
   const { count, addItem } = useCart();
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  /* Back button (mobile only).
+     Goes to the previous page. If the orders page was opened directly (no history inside the app),
+     it goes to the home page instead so the button never leaves the site. */
+  const goBack = () => {
+    if (location.key !== "default") navigate(-1);
+    else navigate("/");
+  };
 
   const [orders, setOrders] = useState<Order[]>([]);
   const [reviews, setReviews] = useState<Review[]>([]);
@@ -301,6 +311,29 @@ export default function Orders() {
       <Navbar cartCount={count} />
 
       <main className="mx-auto max-w-4xl px-3 py-5 sm:px-6 sm:py-8">
+        {/* back button: phones only (the breadcrumb covers larger screens) */}
+        <div className="mb-3 sm:hidden">
+          <button
+            type="button"
+            onClick={goBack}
+            aria-label="Go back"
+            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white text-slate-700 shadow-sm ring-1 ring-slate-200 hover:bg-slate-50 active:bg-slate-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600/40"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              className="h-5 w-5"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M15 18l-6-6 6-6" />
+            </svg>
+          </button>
+        </div>
+
         <Breadcrumb />
 
         <div className="mb-5 flex items-start justify-between gap-3 sm:mb-6 sm:items-end">

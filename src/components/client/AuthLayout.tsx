@@ -56,6 +56,7 @@
 // }
 
 import type { ReactNode } from "react";
+import { Link } from "react-router-dom";
 
 /** Shared shell for the customer login / register / forgot-password pages. */
 export default function AuthLayout({
@@ -96,8 +97,29 @@ export default function AuthLayout({
           </h1>
         </div>
 
-        <div className="rounded-3xl bg-white p-8 shadow-xl shadow-slate-200/60 ring-1 ring-slate-200 sm:p-10">
-          <h2 className="text-2xl font-semibold tracking-tight text-slate-900">
+        <div className="relative rounded-3xl bg-white p-8 shadow-xl shadow-slate-200/60 ring-1 ring-slate-200 sm:p-10">
+          {/* close (X): goes to the home page. Shows on every page that uses this layout. */}
+          <Link
+            to="/"
+            aria-label="Close and go to home page"
+            className="absolute right-3 top-3 flex h-10 w-10 items-center justify-center rounded-full text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-900 active:bg-slate-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600/40 sm:right-4 sm:top-4"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              className="h-5 w-5"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M6 6l12 12M18 6L6 18" />
+            </svg>
+          </Link>
+
+          {/* pr-8 keeps long titles from running under the X */}
+          <h2 className="pr-8 text-2xl font-semibold tracking-tight text-slate-900">
             {title}
           </h2>
           <p className="mt-2 text-sm text-slate-500">{subtitle}</p>

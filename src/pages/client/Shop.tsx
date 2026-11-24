@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Link, useSearchParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import Navbar from "../../components/client/Navbar";
 import Footer from "../../components/client/Footer";
 import ProductCard, { inr } from "../../components/client/Productcard";
@@ -197,6 +197,16 @@ function FilterPanel(p: PanelProps) {
 export default function Shop() {
   const { count, addItem } = useCart();
   const [params, setParams] = useSearchParams();
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  /* Back button (mobile only).
+     Goes to the previous page. If the shop was opened directly (no history inside the app),
+     it goes to the home page instead so the button never leaves the site. */
+  const goBack = () => {
+    if (location.key !== "default") navigate(-1);
+    else navigate("/");
+  };
 
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
@@ -422,9 +432,32 @@ export default function Shop() {
           <span className="mx-2">/</span>
           <span className="text-slate-800">Shop</span>
         </nav>
-        <h1 className="text-2xl font-semibold tracking-tight text-slate-900 sm:mt-2 sm:text-3xl">
-          {category ? catName.get(category) ?? "Products" : "All products"}
-        </h1>
+
+        {/* title row: small back button on phones only (the breadcrumb covers larger screens) */}
+        <div className="flex items-center gap-2 sm:mt-2">
+          <button
+            type="button"
+            onClick={goBack}
+            aria-label="Go back"
+            className="-ml-1 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white text-slate-700 shadow-sm ring-1 ring-slate-200 hover:bg-slate-50 active:bg-slate-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600/40 sm:hidden"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              className="h-5 w-5"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M15 18l-6-6 6-6" />
+            </svg>
+          </button>
+          <h1 className="text-2xl font-semibold tracking-tight text-slate-900 sm:text-3xl">
+            {category ? catName.get(category) ?? "Products" : "All products"}
+          </h1>
+        </div>
 
         {/* banner set in the CMS */}
         {shopBanner && <ShopBanner banner={shopBanner} />}

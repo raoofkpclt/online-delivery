@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   EmailAuthProvider,
   getAuth,
@@ -678,11 +678,20 @@ const PERSONAL: FieldDef<keyof ProfileData>[] = [
 export default function Profile() {
   const { count } = useCart();
   const navigate = useNavigate();
+  const location = useLocation();
   const [user, setUser] = useState<User | null>(null);
   const [data, setData] = useState<ProfileData>(EMPTY);
   const [addresses, setAddresses] = useState<Address[]>([]);
   const [ready, setReady] = useState(false);
   const [error, setError] = useState("");
+
+  /* Back button (mobile only).
+     Goes to the previous page. If the profile was opened directly (no history inside the app),
+     it goes to the home page instead so the button never leaves the site. */
+  const goBack = () => {
+    if (location.key !== "default") navigate(-1);
+    else navigate("/");
+  };
 
   useEffect(() => {
     let alive = true;
@@ -740,6 +749,29 @@ export default function Profile() {
       <Navbar cartCount={count} />
 
       <main className="mx-auto max-w-3xl px-3 py-4 sm:px-6 sm:py-8">
+        {/* back button: phones only (the breadcrumb covers larger screens) */}
+        <div className="mb-3 sm:hidden">
+          <button
+            type="button"
+            onClick={goBack}
+            aria-label="Go back"
+            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white text-slate-700 shadow-sm ring-1 ring-slate-200 hover:bg-slate-50 active:bg-slate-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600/40"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              className="h-5 w-5"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M15 18l-6-6 6-6" />
+            </svg>
+          </button>
+        </div>
+
         {/* breadcrumb: tablet and desktop only */}
         <nav aria-label="Breadcrumb" className="hidden text-sm text-slate-500 sm:block">
           <Link to="/" className="hover:text-slate-800">Home</Link>

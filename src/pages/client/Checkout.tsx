@@ -1,5 +1,5 @@
 import { useEffect, useState, type ChangeEvent } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import {
   addDoc,
   collection,
@@ -89,6 +89,15 @@ export default function Checkout() {
     if (typeof fn === "function") fn();
   };
   const navigate = useNavigate();
+  const location = useLocation();
+
+  /* Back button (mobile only).
+     Goes to the previous page. If checkout was opened directly (no history inside the app),
+     it goes to the cart instead so the button never leaves the site. */
+  const goBack = () => {
+    if (location.key !== "default") navigate(-1);
+    else navigate("/cart");
+  };
 
   const [addresses, setAddresses] = useState<Address[]>([]);
   const [loadingAddr, setLoadingAddr] = useState(true);
@@ -310,7 +319,29 @@ export default function Checkout() {
       <Navbar />
 
       <main className="mx-auto w-full max-w-3xl flex-1 px-4 py-6 pb-10 sm:px-6 sm:py-12">
-        <h1 className="text-2xl font-semibold tracking-tight text-slate-900 sm:text-3xl">Checkout</h1>
+        {/* title row: small back button on phones only */}
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={goBack}
+            aria-label="Go back"
+            className="-ml-1 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white text-slate-700 shadow-sm ring-1 ring-slate-200 hover:bg-slate-50 active:bg-slate-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600/40 sm:hidden"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              className="h-5 w-5"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M15 18l-6-6 6-6" />
+            </svg>
+          </button>
+          <h1 className="text-2xl font-semibold tracking-tight text-slate-900 sm:text-3xl">Checkout</h1>
+        </div>
 
         {/* ── Delivery address ── */}
         <section className="mt-6 sm:mt-8">

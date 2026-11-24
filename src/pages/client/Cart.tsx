@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { createPortal } from "react-dom";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { doc, getDoc } from "firebase/firestore";
 import Navbar from "../../components/client/Navbar";
 import Footer from "../../components/client/Footer";
@@ -96,9 +96,18 @@ function WeightStepper({
 
 export default function Cart() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { confirm, confirmElement } = useConfirm();
   // Products sold per kg are ONE line holding the total grams (no quantity).
   const { items, count, subtotal, setQuantity, setWeight, removeItem, clear, syncStock } = useCart();
+
+  /* Back button (mobile only).
+     Goes to the previous page. If the cart was opened directly (no history inside the app),
+     it goes to the shop instead so the button never leaves the site. */
+  const goBack = () => {
+    if (location.key !== "default") navigate(-1);
+    else navigate("/shop");
+  };
 
   /* Refresh stock from Firestore so the + button uses the real stock,
      not the number saved when the item was added.
@@ -234,9 +243,32 @@ export default function Cart() {
           <span className="mx-2">/</span>
           <span className="text-slate-800">Cart</span>
         </nav>
-        <h1 className="text-2xl font-semibold tracking-tight text-slate-900 sm:mt-2 sm:text-3xl">
-          Your cart
-        </h1>
+
+        {/* title row: small back button on phones only (the breadcrumb covers larger screens) */}
+        <div className="flex items-center gap-2 sm:mt-2">
+          <button
+            type="button"
+            onClick={goBack}
+            aria-label="Go back"
+            className="-ml-1 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white text-slate-700 shadow-sm ring-1 ring-slate-200 hover:bg-slate-50 active:bg-slate-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600/40 sm:hidden"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              className="h-5 w-5"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M15 18l-6-6 6-6" />
+            </svg>
+          </button>
+          <h1 className="text-2xl font-semibold tracking-tight text-slate-900 sm:text-3xl">
+            Your cart
+          </h1>
+        </div>
 
         {items.length === 0 ? (
           <div className="mt-6 rounded-2xl bg-white px-6 py-14 text-center ring-1 ring-slate-200 sm:mt-8 sm:py-16">

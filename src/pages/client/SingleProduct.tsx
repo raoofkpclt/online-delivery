@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import Navbar from "../../components/client/Navbar";
 import Footer from "../../components/client/Footer";
 import ProductCard, { inr } from "../../components/client/Productcard";
@@ -94,7 +94,16 @@ function Row({ label, value }: { label: string; value: React.ReactNode }) {
 export default function SingleProduct() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const location = useLocation();
   const { count, addItem } = useCart();
+
+  /* Back button (mobile only).
+     Goes to the previous page. If the product was opened directly (no history inside the app),
+     it goes to the shop instead so the button never leaves the site. */
+  const goBack = () => {
+    if (location.key !== "default") navigate(-1);
+    else navigate("/shop");
+  };
 
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
@@ -228,6 +237,29 @@ export default function SingleProduct() {
       <Navbar cartCount={count} />
 
       <main className="mx-auto max-w-6xl px-4 py-6 sm:px-6 sm:py-8">
+        {/* back button: phones only (the breadcrumb covers larger screens) */}
+        <div className="mb-4 sm:hidden">
+          <button
+            type="button"
+            onClick={goBack}
+            aria-label="Go back"
+            className="-ml-1 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white text-slate-700 shadow-sm ring-1 ring-slate-200 hover:bg-slate-50 active:bg-slate-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600/40"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              className="h-5 w-5"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M15 18l-6-6 6-6" />
+            </svg>
+          </button>
+        </div>
+
         {/* breadcrumb: hidden on mobile, visible from the sm breakpoint up */}
         <nav aria-label="Breadcrumb" className="hidden flex-wrap items-center text-sm text-slate-500 sm:flex">
           <Link to="/" className="hover:text-slate-800">Home</Link>
