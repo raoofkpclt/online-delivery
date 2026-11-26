@@ -18,7 +18,7 @@ import { placeOrder } from "../../service/orderService"; // ← adjust path if n
 import Navbar from "../../components/client/Navbar";
 import Footer from "../../components/client/Footer";
 
-const WHATSAPP_NUMBER = "918075888900";
+const WHATSAPP_NUMBER = "918943521125";
 const DISCOUNT = 0; // hook up coupons/offers later
 
 type CartItem = {
